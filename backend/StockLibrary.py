@@ -10,17 +10,19 @@ class StockLibrary:
 
     def __init__(self, direction=True):
         # Should only be used when actual server is running
-        self.stockList = pd.read_csv('./backend/nasdaq_screener_1657370654277.csv')
+        # self.stockList = pd.read_csv('./backend/nasdaq_screener_1657370654277.csv')
 
         # Used for smaller scale deployments
         self.symbolList = ['^GSPC', 'MSFT', 'MA', 'MCD', 'EL', 'SPGI', 'ADSK', 'ASML', 'HUBS', 'TTD', 'OKTA']
         self.library = {}
         self.predictedPrices = {}
         self.predictedDirections = {}
+        self.direction = direction
 
+    def train(self):
         for symbol in self.symbolList:
             print('################# Training ', symbol, ' #################')
-            if direction:
+            if self.direction:
                 self.library[symbol] = RandomForestPredictor(Stock(symbol).history)
             else:
                 self.library[symbol] = LSTMPredictor(Stock(symbol).history, test_ratio=0)
@@ -32,7 +34,7 @@ class StockLibrary:
             print('################# Predicting ', symbol, ' #################')
             data = np.array([self.library[symbol].data[-50:, 0]])
             price = self.library[symbol].predict(data.reshape((data.shape[0], data.shape[1], 1)))
-            self.predictedPrices[symbol] = price
+            self.predictedPrices[symbol] = float(price[0][0])
             print('Today: ', Stock(symbol).history.iloc[-1]['Close'], ' Tomorrow: ', price[0][0])
         return self.predictedPrices
 
@@ -40,6 +42,6 @@ class StockLibrary:
         for symbol in self.symbolList:
             print('################# Predicting Direction ', symbol, ' #################')
             price = self.library[symbol].predict(self.library[symbol].data.iloc[-1][self.library[symbol].parameters].values.reshape(1, -1))
-            self.predictedPrices[symbol] = price
+            self.predictedDirections[symbol] = int(price[0])
             print('Today: ', self.library[symbol].data.iloc[-1]['Increase'], ' Tomorrow: ', price[0])
-        return self.predictedPrices
+        return self.predictedDirections

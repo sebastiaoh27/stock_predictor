@@ -24,13 +24,12 @@ def predict_index():
         stockLibrary.train()
         result = stockLibrary.createDirectionPredictions()
         update_database(json.dumps(result), curr_date)
-    if result is not None:
+    else:
         result = json.loads(result)
         for symbol in stockLibrary.symbolList:
             if symbol not in result:
                 result[symbol] = predict_stock(symbol)
             stockList[symbol] = result[symbol]
-
     return json.dumps(stockList)
 
 @app.route('/predict_stock/<string:stock_symbol>', methods=['GET'])

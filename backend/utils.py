@@ -1,6 +1,10 @@
 import json
+from datetime import date, datetime, timedelta
+
+import pandas_market_calendars as mcal
 
 import numpy as np
+from pandas import Timestamp
 
 DB_PATH = 'prediction_database.json'
 
@@ -34,5 +38,20 @@ def read_database(date):
         return db[date]
     else:
         return None
+
+def stock_market_day():
+    curr_date = date.today()
+    calendar = mcal.get_calendar('NYSE').schedule(start_date=str(curr_date), end_date=str(curr_date))
+    close_time = Timestamp(calendar['market_close'].values[0]).time()
+    curr_time = datetime.now()
+
+    # If market is open
+    if curr_time.time() < close_time:
+        return curr_date
+    # If market is closed
+    else:
+        return curr_date + timedelta(days=1)
+
+
 
 

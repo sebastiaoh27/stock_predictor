@@ -1,10 +1,9 @@
 import {getIndexPredictions} from "../services/Service";
-import {Card, CardContent, CircularProgress} from "@mui/material";
-import Typography from "@mui/material/Typography";
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Box from "@mui/material/Box";
 import "./../css/PredictionPage.css"
-import {ArrowDownward, ArrowUpward} from "@mui/icons-material";
+import {CircularProgress, SimpleGrid, Tag, Text} from "@chakra-ui/react";
+import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
 
 
 const PredictionsPage = () => {
@@ -25,40 +24,36 @@ const PredictionsPage = () => {
     })
 
     if (predictions == null || symbols == null) {
-        return(
-            <CircularProgress/>
-        )
+        return null
     }
 
     const getArrow = (predicton) => {
         if (predicton > 0) {
-            return(<ArrowUpward/>)
+            return(<ArrowUpIcon/>)
         }else {
-            return(<ArrowDownward/>)
+            return(<ArrowDownIcon/>)
         }
     }
 
 
     return(
     <div className="prediction_page" >
-        {predictions.map((pred, i) => (
-            <Box sx={{
-                width: "9vw",
-                '&:hover': {
-                    opacity: [0.9, 0.8, 0.7],
-                },
-            }}>
-                <Card raised={true}>
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
+        <Box marginTop="10vh" width="100%">
+            <SimpleGrid columns={4} gap={6} width="75%" marginLeft="10%">
+                {predictions.map((pred, i) => (
+                    <Box borderWidth='1px' borderRadius='lg' w="80%"
+                         textAlign="center" bgcolor="Teal">
+                        <Text mt={2} fontSize={20}>
                             {symbols[i]}
-                        </Typography>
+                        </Text>
                         {getArrow(pred)}
-
-                    </CardContent>
-                </Card>
-            </Box>
-        ))}
+                        <Tag variant="solid" colorScheme="Teal">
+                            Going {pred > 0 ? 'Up': 'Down'}
+                        </Tag>
+                    </Box>
+                ))}
+            </SimpleGrid>
+        </Box>
     </div>
     )
 }

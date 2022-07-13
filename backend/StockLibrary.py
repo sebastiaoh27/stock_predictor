@@ -13,7 +13,7 @@ class StockLibrary:
         # self.stockList = pd.read_csv('./backend/nasdaq_screener_1657370654277.csv')
 
         # Used for smaller scale deployments
-        self.symbolList = ['^GSPC', 'MSFT', 'MA', 'MCD', 'EL', 'SPGI', 'ADSK', 'ASML', 'HUBS', 'TTD', 'OKTA']
+        self.symbolList = ['^GSPC', 'MSFT', 'MA', 'MCD', 'EL', 'SPGI', 'ADSK', 'ASML', 'HUBS', 'TTD', 'OKTA', 'GOOGL']
         self.library = {}
         self.predictedPrices = {}
         self.predictedDirections = {}

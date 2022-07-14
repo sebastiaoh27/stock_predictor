@@ -1,3 +1,8 @@
-.prediction_page {
+.home {
     display: flex;
+}
+
+.stock_box {
+    background: #071924;
+    border-radius: 0.5rem;
 }

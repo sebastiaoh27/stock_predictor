@@ -7,7 +7,7 @@ from backend.StockLibrary import StockLibrary
 import json
 
 # Server
-from backend.utils import update_database, read_database
+from backend.utils import update_database, read_database, stock_market_day
 
 app = Flask(__name__)
 
@@ -17,25 +17,24 @@ stockLibrary = StockLibrary()
 
 @app.route('/predict_index', methods=['GET'])
 def predict_index():
-    curr_date = str(date.today())
+    curr_date = str(stock_market_day())
     result = read_database(curr_date)
     stockList = {}
     if result is None:
         stockLibrary.train()
         result = stockLibrary.createDirectionPredictions()
         update_database(json.dumps(result), curr_date)
-    if result is not None:
+    else:
         result = json.loads(result)
         for symbol in stockLibrary.symbolList:
             if symbol not in result:
                 result[symbol] = predict_stock(symbol)
             stockList[symbol] = result[symbol]
-
     return json.dumps(stockList)
 
 @app.route('/predict_stock/<string:stock_symbol>', methods=['GET'])
 def predict_stock(stock_symbol):
-    curr_date = str(date.today())
+    curr_date = str(stock_market_day())
     result = json.loads(read_database(curr_date))
     if stock_symbol not in result:
         predictor = RandomForestPredictor(Stock(stock_symbol).history)
@@ -47,9 +46,12 @@ def predict_stock(stock_symbol):
 
 @app.route('/get_all_predictions', methods=['GET'])
 def get_all_stocks():
-    curr_date = str(date.today())
+    curr_date = str(stock_market_day())
     return read_database(curr_date)
 
+@app.route('/get_stock_market_day', methods=['GET'])
+def get_stock_market_day():
+    return str(stock_market_day())
 
 if __name__ == "__main__":
     app.secret_key = '528491@JOKER'

@@ -36,13 +36,18 @@ def predict_index():
 def predict_stock(stock_symbol):
     curr_date = str(stock_market_day())
     result = json.loads(read_database(curr_date))
+
     if stock_symbol not in result:
-        predictor = RandomForestPredictor(Stock(stock_symbol).history)
-        predictor.train()
+        stock_history = Stock(stock_symbol).history
+        predictor = RandomForestPredictor(stock_history)
+        try:
+            predictor.train()
+        except:
+            return {stock_symbol: -1}
         prediction = int(predictor.predict(predictor.data.iloc[-1][predictor.parameters].values.reshape(1, -1))[0])
         result[stock_symbol] = prediction
         update_database(json.dumps(result), curr_date)
-    return {stock_symbol: result[stock_symbol]}
+    return {stock_symbol.upper(): result[stock_symbol]}
 
 @app.route('/get_all_predictions', methods=['GET'])
 def get_all_stocks():

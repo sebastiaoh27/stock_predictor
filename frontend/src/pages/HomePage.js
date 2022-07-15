@@ -1,11 +1,8 @@
 import {getIndexPredictions} from "../services/Service";
 import React, {useState} from 'react';
-import Box from "@mui/material/Box";
-import "../css/PredictionPage.css"
-import {CircularProgress, SimpleGrid, Tag, Text, AspectRatio, Badge} from "@chakra-ui/react";
-import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
-import { motion } from "framer-motion"
-import {Typography} from "@mui/material";
+import "../css/App.css"
+import {CircularProgress, SimpleGrid, Container} from "@chakra-ui/react";
+import StockItem from "../components/StockItem";
 
 
 const HomePage = () => {
@@ -26,35 +23,21 @@ const HomePage = () => {
     })
 
     if (predictions == null || symbols == null) {
-        return null
-    }
-
-    const getArrow = (predicton) => {
-        if (predicton > 0) {
-            return(<ArrowUpIcon boxSize={8} color="white"/>)
-        }else {
-            return(<ArrowDownIcon boxSize={8} color="white"/>)
-        }
+        return(
+            <CircularProgress isIndeterminate pt="16%" pl="48%"/>
+        )
     }
 
 
     return(
     <div className="home_page" >
-        <Box pt="5%" width="100%" height="100%">
-            <SimpleGrid columns={4} gap={6} width="50%" marginLeft="25%">
+        <Container pt="5%" width="100%" height="100%"  maxW="100ch" >
+            <SimpleGrid columns={4} gap={6} width="100%">
                 {predictions.map((pred, i) => (
-                        <Box borderRadius="0.5rem" className="stock_box">
-                            <Text variant="h2" ml={48 - symbols[i].length*2.15  + "%"} color="white">{symbols[i]}</Text>
-                            <Box ml="40%" mt="10%" mb="10%">
-                                {getArrow(pred)}
-                            </Box>
-                            <Badge borderRadius='lg' px='2' colorScheme='teal' float="right">
-                                Going {pred > 0 ? 'Up': 'Down'}
-                            </Badge>
-                        </Box>
+                        <StockItem prediction={pred} symbol={symbols[i]}/>
                 ))}
             </SimpleGrid>
-        </Box>
+        </Container>
     </div>
     )
 }

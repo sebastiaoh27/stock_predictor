@@ -6,6 +6,17 @@
     height: 100%;
 }
 
-html, #root, .App, .home_page{
+html, #root, .App, .home_page, .predictions_page{
     height: 100%;
+}
+
+.home {
+    display: flex;
+}
+
+.stock_box {
+    background: #071924;
+    border-radius: 0.5rem;
+    min-height: 26.7%;
+    min-width: 17%;
 }
